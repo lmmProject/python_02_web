@@ -167,10 +167,13 @@ class TextField(Field):
 class ModelMetaclass(type):
 
     def __new__(cls, name, bases, attrs):
+        # 排除Model类本身:
         if name == 'Model':
             return type.__new__(cls, name, bases, attrs)
+        # 获取table名称:
         tableName = attrs.get('__table__', None) or name
         logging.info('found model: %s (table: %s)' % (name, tableName))
+        # 获取所有的Field和主键名:
         mappings = dict()
         fields = []
         primaryKey = None
@@ -199,6 +202,8 @@ class ModelMetaclass(type):
         attrs['__update__'] = 'update `%s` set %s where `%s`=?' % (tableName, ', '.join(map(lambda f: '`%s`=?' % (mappings.get(f).name or f), fields)), primaryKey)
         attrs['__delete__'] = 'delete from `%s` where `%s`=?' % (tableName, primaryKey)
         return type.__new__(cls, name, bases, attrs)
+
+# 设计ORM需要从上层调用者角度来设计。
 
 
 class Model(dict, metaclass=ModelMetaclass):

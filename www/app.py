@@ -30,7 +30,10 @@ def init_jinja2(app, **kw):
             env.filters[name] = f
     app['__templating__'] = env
 
-
+# middleware是一种拦截器，一个URL在被某个函数处理前，可以经过一系列的middleware的处理。
+# 一个middleware可以改变URL的输入、输出，甚至可以决定不继续处理而直接返回。
+# middleware的用处就在于把通用的功能从每个URL处理函数中拿出来，集中放到一个地方。
+# 例如，一个记录URL日志的logger可以简单定义如下：
 async def logger_factory(app, handler):
     async def logger(request):
         logging.info('Request: %s %s' % (request.method, request.path))
@@ -81,11 +84,11 @@ async def response_factory(app, handler):
                 resp = web.Response(body=app['__templating__'].get_template(template).render(**r).encode('utf-8'))
                 resp.content_type = 'text/html;charset=utf-8'
                 return resp
-        if isinstance(r, int) and r >= 100 and r < 600:
+        if isinstance(r, int) and 100 <= r < 600:
             return web.Response(r)
         if isinstance(r, tuple) and len(r) == 2:
             t, m = r
-            if isinstance(t, int) and t >= 100 and t < 600:
+            if isinstance(t, int) and 100 <= t < 600:
                 return web.Response(t, str(m))
         # default:
         resp = web.Response(body=str(r).encode('utf-8'))
@@ -119,6 +122,7 @@ async def init(loop):
     app = web.Application(loop=loop, middlewares=[
         logger_factory, response_factory
     ])
+    # 加入middleware、jinja2模板和自注册的支持：
     init_jinja2(app, filters=dict(datetime=datetime_filter))
     add_routes(app, 'handlers')
     add_static(app)

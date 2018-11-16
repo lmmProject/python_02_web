@@ -13,6 +13,6 @@ configs = {
         'db': 'demo_02_web'
     },
     'session': {
-        'secret': 'Awesome'
+        'secret': 'lmm'
     }
 }

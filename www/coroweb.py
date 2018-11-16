@@ -3,7 +3,7 @@ from urllib import parse
 from aiohttp import web
 from www.apis import APIError
 
-
+# 要把一个函数映射为一个URL处理函数，我们先定义@get()：
 def get(path):
     '''
     Define decorator @get('/path')
@@ -12,12 +12,11 @@ def get(path):
         @functools.wraps(func)
         def wrapper(*args, **kw):
             return func(*args, **kw)
-
         wrapper.__method__ = 'GET'
         wrapper.__route__ = path
         return wrapper
-
     return decorator
+# 这样，一个函数通过@get()的装饰就附带了URL信息。
 
 
 def post(path):
@@ -81,7 +80,11 @@ def has_request_arg(fn):
                 'request parameter must be the last named parameter in function: %s%s' % (fn.__name__, str(sig)))
     return found
 
-
+# URL处理函数不一定是一个coroutine，因此我们用RequestHandler()来封装一个URL处理函数。
+#
+# RequestHandler是一个类，由于定义了__call__()方法，因此可以将其实例视为函数。
+# RequestHandler目的就是从URL函数中分析其需要接收的参数，
+# 从request中获取必要的参数，调用URL函数，然后把结果转换为web.Response对象，这样，就完全符合aiohttp框架的要求：
 class RequestHandler(object):
 
     def __init__(self, app, fn):
@@ -151,7 +154,7 @@ def add_static(app):
     app.router.add_static('/static/', path)
     logging.info('add static %s => %s' % ('/static/', path))
 
-
+# 用来注册一个URL处理函数：
 def add_route(app, fn):
     method = getattr(fn, '__method__', None)
     path = getattr(fn, '__route__', None)
