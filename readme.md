@@ -11,10 +11,10 @@ $ pip3 install aiomysql
 这就是异步编程的一个原则：一旦决定使用异步，则系统每一层都必须是异步，“开弓没有回头箭”。幸运的是aiomysql为MySQL数据库提供了异步IO的驱动  
 ## cookie认证登陆
 由于HTTP协议是一种无状态协议，而服务器要跟踪用户状态，就只能通过cookie实现。大多数Web框架提供了Session功能来封装保存用户状态的cookie。  
-##### Session
+#### Session
 优点是简单易用，可以直接从Session中取出用户登录信息。  
 Session的缺点是服务器需要在内存中维护一个映射表来存储用户登录信息，如果有两台以上服务器，就需要对Session做集群，因此，使用Session的Web App很难扩展。  
-##### cookie
+#### cookie
 每次用户访问任意URL，都会对cookie进行验证，这种方式的好处是保证服务器处理任意的URL都是无状态的，可以扩展到多台服务器。  
 由于登录成功后是由服务器生成一个cookie发送给浏览器，所以，要保证这个cookie不会被客户端伪造出来。  
 实现防伪造cookie的关键是通过一个单向算法（例如SHA1），举例如下：  
