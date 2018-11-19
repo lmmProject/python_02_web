@@ -36,7 +36,7 @@ doctest的使用有两种方式：一个是嵌入到python源中。另一个是�
 把Model和View关联起来的就是ViewModel。ViewModel负责把Model的数据同步到View显示出来，还负责把View的修改同步回Model。  
 已有许多成熟的MVVM框架，例如AngularJS，KnockoutJS等。我们选择Vue这个简单易用的MVVM框架来实现创建Blog的页面templates/manage_blog_edit.html  
 初始化Vue时，我们指定3个参数：  
-el：根据选择器查找绑定的View，这里是#vm，就是id为vm的DOM，对应的是一个<div>标签；  
+el：根据选择器查找绑定的View，这里是#vm，就是id为vm的DOM，对应的是一个<code>&lt;div&gt;</code>标签；  
 data：JavaScript对象表示的Model，我们初始化为{ name: '', summary: '', content: ''}；  
 methods：View可以触发的JavaScript函数，submit就是提交表单时触发的函数。  
 Form表单通过<form v-on="submit: submit">把提交表单的事件关联到submit方法。  
