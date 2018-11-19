@@ -31,4 +31,13 @@ __SHA1("用户id" + "用户口令" + "过期时间" + "SecretKey")__
 ## doctest
 doctest是python自带的一个模块，你可以把它叫做“文档测试”（doctest）模块。  
 doctest的使用有两种方式：一个是嵌入到python源中。另一个是放到一个独立文件。  
-
+## MVVM：Model View ViewModel
+由于Model表示数据，View负责显示，两者做到了最大限度的分离。  
+把Model和View关联起来的就是ViewModel。ViewModel负责把Model的数据同步到View显示出来，还负责把View的修改同步回Model。  
+已有许多成熟的MVVM框架，例如AngularJS，KnockoutJS等。我们选择Vue这个简单易用的MVVM框架来实现创建Blog的页面templates/manage_blog_edit.html  
+初始化Vue时，我们指定3个参数：  
+el：根据选择器查找绑定的View，这里是#vm，就是id为vm的DOM，对应的是一个<div>标签；  
+data：JavaScript对象表示的Model，我们初始化为{ name: '', summary: '', content: ''}；  
+methods：View可以触发的JavaScript函数，submit就是提交表单时触发的函数。  
+Form表单通过<form v-on="submit: submit">把提交表单的事件关联到submit方法。  
+需要特别注意的是，在MVVM中，**Model和View是双向绑定的**。如果我们在Form中修改了文本框的值，可以在Model中立刻拿到新的值。试试在表单中输入文本，然后在Chrome浏览器中打开JavaScript控制台，可以通过vm.name访问单个属性，或者通过vm.$data访问整个Model  
