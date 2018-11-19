@@ -6,21 +6,18 @@ from jinja2 import Environment, FileSystemLoader
 from www import orm
 from www.coroweb import add_routes, add_static
 
-from www.handlers import cookie2user, COOKIE_NAME
-from www.config import configs
-
 logging.basicConfig(level=logging.INFO)
 
 
 def init_jinja2(app, **kw):
     logging.info('init jinja2...')
     options = dict(
-        autoescape = kw.get('autoescape', True),
-        block_start_string = kw.get('block_start_string', '{%'),
-        block_end_string = kw.get('block_end_string', '%}'),
-        variable_start_string = kw.get('variable_start_string', '{{'),
-        variable_end_string = kw.get('variable_end_string', '}}'),
-        auto_reload = kw.get('auto_reload', True)
+        autoescape=kw.get('autoescape', True),
+        block_start_string=kw.get('block_start_string', '{%'),
+        block_end_string=kw.get('block_end_string', '%}'),
+        variable_start_string=kw.get('variable_start_string', '{{'),
+        variable_end_string=kw.get('variable_end_string', '}}'),
+        auto_reload=kw.get('auto_reload', True)
     )
     path = kw.get('path', None)
     if path is None:
@@ -37,37 +34,33 @@ def init_jinja2(app, **kw):
 # 一个middleware可以改变URL的输入、输出，甚至可以决定不继续处理而直接返回。
 # middleware的用处就在于把通用的功能从每个URL处理函数中拿出来，集中放到一个地方。
 # 例如，一个记录URL日志的logger可以简单定义如下：
-@asyncio.coroutine
-def logger_factory(app, handler):
-    @asyncio.coroutine
-    def logger(request):
+async def logger_factory(app, handler):
+    async def logger(request):
         logging.info('Request: %s %s' % (request.method, request.path))
-        # yield from asyncio.sleep(0.3)
-        return (yield from handler(request))
+        # await asyncio.sleep(0.3)
+        return (await handler(request))
+
     return logger
 
 
-@asyncio.coroutine
-def data_factory(app, handler):
-    @asyncio.coroutine
-    def parse_data(request):
+async def data_factory(app, handler):
+    async def parse_data(request):
         if request.method == 'POST':
             if request.content_type.startswith('application/json'):
-                request.__data__ = yield from request.json()
+                request.__data__ = await request.json()
                 logging.info('request json: %s' % str(request.__data__))
             elif request.content_type.startswith('application/x-www-form-urlencoded'):
-                request.__data__ = yield from request.post()
+                request.__data__ = await request.post()
                 logging.info('request form: %s' % str(request.__data__))
-        return (yield from handler(request))
+        return (await handler(request))
+
     return parse_data
 
 
-@asyncio.coroutine
-def response_factory(app, handler):
-    @asyncio.coroutine
-    def response(request):
+async def response_factory(app, handler):
+    async def response(request):
         logging.info('Response handler...')
-        r = yield from handler(request)
+        r = await handler(request)
         if isinstance(r, web.StreamResponse):
             return r
         if isinstance(r, bytes):
@@ -88,7 +81,6 @@ def response_factory(app, handler):
                 resp.content_type = 'application/json;charset=utf-8'
                 return resp
             else:
-                r['__user__'] = request.__user__
                 resp = web.Response(body=app['__templating__'].get_template(template).render(**r).encode('utf-8'))
                 resp.content_type = 'text/html;charset=utf-8'
                 return resp
@@ -120,45 +112,24 @@ def datetime_filter(t):
     return u'%s年%s月%s日' % (dt.year, dt.month, dt.day)
 
 
-# 对于每个URL处理函数，如果我们都去写解析cookie的代码，那会导致代码重复很多次。
-#
-# 利用middle在处理URL之前，把cookie解析出来，并将登录用户绑定到request对象上，
-# 这样，后续的URL处理函数就可以直接拿到登录用户：
-@asyncio.coroutine
-def auth_factory(app, handler):
-    @asyncio.coroutine
-    def auth(request):
-        logging.info('check user: %s %s' % (request.method, request.path))
-        request.__user__ = None
-        cookie_str = request.cookies.get(COOKIE_NAME)
-        if cookie_str:
-            user = yield from cookie2user(cookie_str)
-            if user:
-                logging.info('set current user: %s' % user.email)
-                request.__user__ = user
-        if request.path.startswith('/manage/') and (request.__user__ is None or not request.__user__.admin):
-            return web.HTTPFound('/signin')
-        return (yield from handler(request))
-    return auth
-
-
 '''
 async web application.
 '''
 
 
-@asyncio.coroutine
-def init(loop):
-    yield from orm.create_pool(loop=loop, **configs.db)
+async def init(loop):
+    await orm.create_pool(loop=loop, host='127.0.0.1', port=3306, user='root', password='lmmlmm', db='demo_02_web')
     app = web.Application(loop=loop, middlewares=[
-        logger_factory, auth_factory, response_factory
+        logger_factory, response_factory
     ])
+    # 加入middleware、jinja2模板和自注册的支持：
     init_jinja2(app, filters=dict(datetime=datetime_filter))
     add_routes(app, 'handlers')
     add_static(app)
-    srv = yield from loop.create_server(app.make_handler(), '127.0.0.1', 9000)
+    srv = await loop.create_server(app.make_handler(), '127.0.0.1', 9000)
     logging.info('server started at http://127.0.0.1:9000...')
     return srv
+
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(init(loop))
