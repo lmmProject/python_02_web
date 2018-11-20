@@ -1,5 +1,5 @@
 import www.config_default
-import www.config_override
+import conf.config_override
 
 
 class Dict(dict):
@@ -44,7 +44,7 @@ def toDict(d):
 configs = www.config_default.configs
 
 try:
-    configs = merge(configs, www.config_override.configs)
+    configs = merge(configs, conf.config_override.configs)
 except ImportError:
     pass
 
