@@ -1,6 +1,6 @@
 # [Python](https://docs.python.org/3.6/library/index.html)实战
 ## 搭建环境
-异步框架[aiohttp](https://aiohttp.readthedocs.io/en/stable/web_reference.html#aiohttp.web.post)：
+异步框架[aiohttp](https://aiohttp.readthedocs.io/en/stable/web_reference.html)：
 $pip3 install aiohttp  
 前端模板引擎[jinja2](http://jinja.pocoo.org/docs/2.10/)：
 $ pip3 install jinja2  
