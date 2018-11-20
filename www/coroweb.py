@@ -6,9 +6,9 @@ from www.apis import APIError
 
 # 要把一个函数映射为一个URL处理函数，我们先定义@get()：
 def get(path):
-    '''
+    """
     Define decorator @get('/path')
-    '''
+    """
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kw):

@@ -141,6 +141,7 @@ class Field(object):
         return '<%s, %s:%s>' % (self.__class__.__name__, self.column_type, self.name)
 
 
+# 继承Field
 class StringField(Field):
     def __init__(self, name=None, primary_key=False, default=None, ddl='varchar(100)'):
         super().__init__(name, ddl, primary_key, default)
@@ -205,9 +206,8 @@ class ModelMetaclass(type):
         attrs['__delete__'] = 'delete from `%s` where `%s`=?' % (tableName, primaryKey)
         return type.__new__(cls, name, bases, attrs)
 
+
 # 设计ORM需要从上层调用者角度来设计。
-
-
 class Model(dict, metaclass=ModelMetaclass):
 
     def __init__(self, **kw):
@@ -271,19 +271,6 @@ class Model(dict, metaclass=ModelMetaclass):
             sql.append('where')
             sql.append(where)
         rs = await select(' '.join(sql), args, 1)
-        if len(rs) == 0:
-            return None
-        return rs[0]['_num_']
-
-    @classmethod
-    @asyncio.coroutine
-    def findNumber(cls, selectField, where=None, args=None):
-        """  find number by select and where. """
-        sql = ['select %s _num_ from `%s`' % (selectField, cls.__table__)]
-        if where:
-            sql.append('where')
-            sql.append(where)
-        rs = yield from select(' '.join(sql), args, 1)
         if len(rs) == 0:
             return None
         return rs[0]['_num_']
