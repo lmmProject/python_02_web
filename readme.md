@@ -1,10 +1,10 @@
-# 实战
+# [Python](https://docs.python.org/3.6/library/index.html)实战
 ## 搭建环境
-异步框架aiohttp：
+异步框架[aiohttp](https://aiohttp.readthedocs.io/en/stable/web_reference.html#aiohttp.web.post)：
 $pip3 install aiohttp  
-前端模板引擎jinja2：
+前端模板引擎[jinja2](http://jinja.pocoo.org/docs/2.10/)：
 $ pip3 install jinja2  
-MySQL的Python异步驱动程序aiomysql：
+MySQL的Python异步驱动程序[aiomysql](https://aiomysql.readthedocs.io/en/latest/connection.html)：
 $ pip3 install aiomysql  
 ## 异步编程
 由于Web框架使用了基于asyncio的aiohttp，这是基于协程的异步模型。在协程中，不能调用普通的同步IO操作，因为所有用户都是由一个线程服务的，协程的执行速度必须非常快，才能处理大量用户的请求。而耗时的IO操作不能在协程中以同步的方式调用，否则，等待一个IO操作时，系统无法响应任何其他用户。  
@@ -44,13 +44,13 @@ methods：View可以触发的JavaScript函数，submit就是提交表单时触�
 Form表单通过<code>&lt;form v-on="submit: submit"&gt;</code>把提交表单的事件关联到submit方法。  
 需要特别注意的是，在MVVM中，**Model和View是双向绑定的**。如果我们在Form中修改了文本框的值，可以在Model中立刻拿到新的值。试试在表单中输入文本，然后在Chrome浏览器中打开JavaScript控制台，可以通过vm.name访问单个属性，或者通过vm.$data访问整个Model。 
 ## watchdog
-Django的开发环境在Debug模式下就可以做到自动重新加载，如果我们编写的服务器也能实现这个功能，就能大大提升开发效率。  
+[Django](https://docs.djangoproject.com/zh-hans/2.1/)的开发环境在Debug模式下就可以做到自动重新加载，如果我们编写的服务器也能实现这个功能，就能大大提升开发效率。  
 其实Python本身提供了重新载入模块的功能，但不是所有模块都能被重新载入。  
 另一种思路是检测www目录下的代码改动，一旦有改动，就自动重启服务器。  
-Python的第三方库watchdog可以利用操作系统的API来监控目录文件的变化，并发送通知。
+Python的第三方库[watchdog](https://pypi.org/project/watchdog/)可以利用操作系统的API来监控目录文件的变化，并发送通知。
 ## Supervisor
-Supervisor是一个管理进程的工具，可以随系统启动而启动服务，它还时刻监控服务进程，如果服务进程意外退出，Supervisor可以自动重启服务。  
+[Supervisor](http://supervisord.org/introduction.html)是一个管理进程的工具，可以随系统启动而启动服务，它还时刻监控服务进程，如果服务进程意外退出，Supervisor可以自动重启服务。  
 Nginx：高性能Web服务器+负责反向代理；  
 Supervisor：监控服务进程的工具；  
-Fabric就是一个自动化部署工具。由于Fabric是用Python 2.x开发的，所以，部署脚本要用Python 2.7来编写，本机还必须安装Python 2.7版本。  
+[Fabric](http://www.fabfile.org/)就是一个自动化部署工具。由于Fabric是用Python 2.x开发的，所以，部署脚本要用Python 2.7来编写，本机还必须安装Python 2.7版本。  
 
