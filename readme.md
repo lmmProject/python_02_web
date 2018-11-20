@@ -43,4 +43,9 @@ data：JavaScript对象表示的Model，我们初始化为{ name: '', summary: '
 methods：View可以触发的JavaScript函数，submit就是提交表单时触发的函数。  
 Form表单通过<code>&lt;form v-on="submit: submit"&gt;</code>把提交表单的事件关联到submit方法。  
 需要特别注意的是，在MVVM中，**Model和View是双向绑定的**。如果我们在Form中修改了文本框的值，可以在Model中立刻拿到新的值。试试在表单中输入文本，然后在Chrome浏览器中打开JavaScript控制台，可以通过vm.name访问单个属性，或者通过vm.$data访问整个Model。 
- 
+## watchdog
+Django的开发环境在Debug模式下就可以做到自动重新加载，如果我们编写的服务器也能实现这个功能，就能大大提升开发效率。  
+其实Python本身提供了重新载入模块的功能，但不是所有模块都能被重新载入。  
+另一种思路是检测www目录下的代码改动，一旦有改动，就自动重启服务器。  
+Python的第三方库watchdog可以利用操作系统的API来监控目录文件的变化，并发送通知。
+   
