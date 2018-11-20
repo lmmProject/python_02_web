@@ -1,6 +1,6 @@
-'''
+"""
 Override configurations.
-'''
+"""
 
 configs = {
     'db': {

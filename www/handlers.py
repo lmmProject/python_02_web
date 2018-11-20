@@ -1,6 +1,7 @@
-' url handlers '
+"""
+url handlers
+"""""
 import re, time, json, logging, hashlib, base64, asyncio
-
 from www.apis import APIValueError, APIError, Page, APIPermissionError
 from www.coroweb import get, post
 from www.models import User, Comment, Blog, next_id
@@ -47,9 +48,9 @@ _COOKIE_KEY = configs.session.secret
 
 
 def user2cookie(user, max_age):
-    '''
-    Generate cookie str by user.
-    '''
+    """
+     Generate cookie str by user.
+    """
     # build cookie string by: id-expires-sha1
     expires = str(int(time.time() + max_age))
     s = '%s-%s-%s-%s' % (user.id, user.passwd, expires, _COOKIE_KEY)
@@ -58,9 +59,9 @@ def user2cookie(user, max_age):
 
 @asyncio.coroutine
 def cookie2user(cookie_str):
-    '''
+    """
     Parse cookie and load user if cookie is valid.
-    '''
+    """
     if not cookie_str:
         return None
     try:
@@ -126,6 +127,7 @@ def api_register_user(*, email, name, passwd):
     r.body = json.dumps(user, ensure_ascii=False).encode('utf-8')
     return r
 
+
 # 用户登录比用户注册复杂。由于HTTP协议是一种无状态协议，而服务器要跟踪用户状态，就只能通过cookie实现。
 # 大多数Web框架提供了Session功能来封装保存用户状态的cookie。
 #
@@ -156,8 +158,6 @@ def api_register_user(*, email, name, passwd):
 # 但无法通过SHA1结果反推出原始字符串。
 #
 # 所以登录API可以实现如下：
-
-
 @post('/api/authenticate')
 def authenticate(*, email, passwd):
     if not email:

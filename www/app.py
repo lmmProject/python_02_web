@@ -5,7 +5,6 @@ from aiohttp import web
 from jinja2 import Environment, FileSystemLoader
 from www import orm
 from www.coroweb import add_routes, add_static
-
 from www.handlers import cookie2user, COOKIE_NAME
 from www.config import configs
 
@@ -15,12 +14,12 @@ logging.basicConfig(level=logging.INFO)
 def init_jinja2(app, **kw):
     logging.info('init jinja2...')
     options = dict(
-        autoescape = kw.get('autoescape', True),
-        block_start_string = kw.get('block_start_string', '{%'),
-        block_end_string = kw.get('block_end_string', '%}'),
-        variable_start_string = kw.get('variable_start_string', '{{'),
-        variable_end_string = kw.get('variable_end_string', '}}'),
-        auto_reload = kw.get('auto_reload', True)
+        autoescape=kw.get('autoescape', True),
+        block_start_string=kw.get('block_start_string', '{%'),
+        block_end_string=kw.get('block_end_string', '%}'),
+        variable_start_string=kw.get('variable_start_string', '{{'),
+        variable_end_string=kw.get('variable_end_string', '}}'),
+        auto_reload=kw.get('auto_reload', True)
     )
     path = kw.get('path', None)
     if path is None:
@@ -32,6 +31,7 @@ def init_jinja2(app, **kw):
         for name, f in filters.items():
             env.filters[name] = f
     app['__templating__'] = env
+
 
 # middleware是一种拦截器，一个URL在被某个函数处理前，可以经过一系列的middleware的处理。
 # 一个middleware可以改变URL的输入、输出，甚至可以决定不继续处理而直接返回。
@@ -142,9 +142,9 @@ def auth_factory(app, handler):
     return auth
 
 
-'''
+"""
 async web application.
-'''
+"""
 
 
 @asyncio.coroutine

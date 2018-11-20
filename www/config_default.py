@@ -1,7 +1,6 @@
-'''
+"""
 Default configurations.
-'''
-
+"""
 
 configs = {
     'debug': True,

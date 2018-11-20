@@ -3,6 +3,7 @@ from urllib import parse
 from aiohttp import web
 from www.apis import APIError
 
+
 # 要把一个函数映射为一个URL处理函数，我们先定义@get()：
 def get(path):
     '''
@@ -20,9 +21,9 @@ def get(path):
 
 
 def post(path):
-    '''
+    """
     Define decorator @post('/path')
-    '''
+    """
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kw):
@@ -79,6 +80,7 @@ def has_request_arg(fn):
             raise ValueError(
                 'request parameter must be the last named parameter in function: %s%s' % (fn.__name__, str(sig)))
     return found
+
 
 # URL处理函数不一定是一个coroutine，因此我们用RequestHandler()来封装一个URL处理函数。
 #
@@ -153,6 +155,7 @@ def add_static(app):
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
     app.router.add_static('/static/', path)
     logging.info('add static %s => %s' % ('/static/', path))
+
 
 # 用来注册一个URL处理函数：
 def add_route(app, fn):
